@@ -1,0 +1,82 @@
+---
+import Layout from "@halleyfante/documentation/Layout";
+import PixCode from "../components/PixCode.astro";
+---
+
+<Layout
+  title="Exporting"
+  description="Exporting pixel art as PNG, SVG, and WebP in Pix"
+  current="exporting"
+>
+  <p>
+    The <code>export</code> statement saves the current state of the grid as an
+    image file.
+  </p>
+
+  <h2>Syntax</h2>
+  <PixCode code={`export "<filename>" in <format> [scale <factor>]`} />
+  <ul>
+    <li><code>filename</code> &mdash; the output file name without extension.</li>
+    <li><code>format</code> &mdash; the image format: <code>png</code>, <code>svg</code>, <code>webp</code>, or <code>gif</code>.</li>
+    <li><code>scale</code> &mdash; optional scaling factor (default: 1).</li>
+  </ul>
+
+  <h2>Formats</h2>
+  <ul>
+    <li><code>png</code> &mdash; lossless raster image with transparency.</li>
+    <li><code>svg</code> &mdash; vector format. Each pixel becomes a <code>&lt;rect&gt;</code> element. Scales without loss of quality.</li>
+    <li><code>webp</code> &mdash; compact raster format for the web.</li>
+    <li><code>gif</code> &mdash; animated format. Collects all <code>frame</code> keyframes into an animation.</li>
+  </ul>
+  <PixCode code={`export "art" in png
+export "art" in svg
+export "art" in webp
+export "animation" in gif`} />
+
+  <h2>Scale</h2>
+  <p>
+    The scale factor determines how many image pixels each grid pixel becomes.
+    With <code>scale 1</code>, a 16-by-16 grid produces a 16-by-16 image. With
+    <code>scale 8</code>, the same grid produces a 128-by-128 image.
+  </p>
+  <PixCode code={`export "small" in png             // 1:1, each grid pixel is one image pixel
+export "medium" in png scale 4    // each grid pixel becomes a 4x4 block
+export "large" in png scale 16    // each grid pixel becomes a 16x16 block`} />
+  <p>
+    The output resolution is <code>width * scale</code> by
+    <code>height * scale</code>. For SVG, scale controls the size of each
+    <code>&lt;rect&gt;</code> element.
+  </p>
+
+  <h2>Multiple exports</h2>
+  <p>
+    A program can contain multiple <code>export</code> statements. Each one
+    captures the grid in its current state, so you can export intermediate steps
+    or the same image in different formats.
+  </p>
+  <PixCode code={`grid 9 by 9
+
+circle (4, 4) radius 3 with #e84a00
+export "step1" in png scale 8
+
+circle (4, 4) radius 1 with #e8ddd0
+export "step2" in png scale 8`} />
+  <p>
+    This produces two files: <code>step1.png</code> with just the circle,
+    and <code>step2.png</code> with a smaller disc in its center.
+  </p>
+
+  <h2>Transparency</h2>
+  <p>
+    Pixels that have not been drawn (or that have been erased) are fully
+    transparent in the output. In PNG and WebP, they become transparent pixels.
+    In SVG, no <code>&lt;rect&gt;</code> is emitted for empty pixels.
+  </p>
+
+  <h2>Output</h2>
+  <p>
+    The file is written to the current working directory with the format
+    extension appended to the filename. For example,
+    <code>export "art" in svg</code> produces <code>art.svg</code>.
+  </p>
+</Layout>

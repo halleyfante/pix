@@ -1,0 +1,74 @@
+---
+import Layout from "@halleyfante/documentation/Layout";
+import PixCode from "../components/PixCode.astro";
+---
+
+<Layout
+  title="Getting Started"
+  description="Install Pix and write your first pixel art program"
+  current="getting-started"
+>
+  <h2>Installation</h2>
+  <p>
+    Download the latest binary from the
+    <a href="https://github.com/halleyfante/pix/releases">releases page</a>
+    and place it in a directory in your <code>PATH</code>.
+  </p>
+  <pre><code>tar xzf pix-v*.tar.gz
+sudo mv pix /usr/local/bin/</code></pre>
+
+  <h3>Building from source</h3>
+  <p>
+    Alternatively, build from source with Cargo:
+  </p>
+  <pre><code>git clone https://github.com/halleyfante/pix.git
+cd pix/compiler
+cargo build --release</code></pre>
+  <p>
+    The compiled binary will be at <code>compiler/target/release/pix</code>.
+  </p>
+
+  <h2>Your first program</h2>
+  <p>
+    Create a file called <code>hello.pix</code>:
+  </p>
+
+  <div class="example">
+    <PixCode code={`grid 17 by 17
+circle (8, 8) radius 7 with #e84a00
+export "hello" in png scale 8`} />
+    <figure>
+      <img src={`${import.meta.env.BASE_URL}examples/circle.png`} alt="Orange circle" class="example-image" width="136" height="136" />
+      <figcaption>A filled circle centered on a 17x17 grid, scaled 8x</figcaption>
+    </figure>
+  </div>
+
+  <p>Run it:</p>
+  <pre><code>pix hello.pix</code></pre>
+  <p>
+    This produces <code>hello.png</code> in the current directory.
+  </p>
+
+  <h2>Program structure</h2>
+  <p>
+    Every Pix program follows this structure:
+  </p>
+  <ol>
+    <li>A <code>grid</code> statement to set the canvas size (required, exactly one).</li>
+    <li>An optional <code>color</code> block to define named colors.</li>
+    <li>Any number of <code>draw</code>, <code>erase</code>, <code>clear</code>, and shape statements.</li>
+    <li>One or more <code>export</code> statements to save the result.</li>
+  </ol>
+  <p>
+    Statements are processed in order. Later draw operations overwrite earlier
+    ones, and <code>erase</code> removes previously drawn pixels.
+  </p>
+
+  <h2>Comments</h2>
+  <p>
+    Use <code>//</code> to add comments. Everything after <code>//</code> until
+    the end of the line is ignored.
+  </p>
+  <PixCode code={`// This is a comment
+grid 17 by 17  // inline comment`} />
+</Layout>

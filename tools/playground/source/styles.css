@@ -1,0 +1,154 @@
+@import "@fontsource/lora/400.css";
+@import "@fontsource/lora/700.css";
+@import "@fontsource/jetbrains-mono/400.css";
+@import "@fontsource/jetbrains-mono/500.css";
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Lora", Georgia, serif;
+  background-color: #121212;
+  color: #e8ddd0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.workspace {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.preview-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: #1e1e1e;
+  border-bottom: 1px solid #333333;
+  overflow: hidden;
+}
+
+.preview-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.375rem 1rem;
+  border-bottom: 1px solid #333333;
+  background-color: #1e1e1e;
+  font-size: 0.75rem;
+}
+
+.preview-info {
+  display: flex;
+  gap: 1rem;
+}
+
+.preview-info-text {
+  color: #706050;
+  font-family: "JetBrains Mono", monospace;
+}
+
+.preview-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.grid-toggle-button.active {
+  color: #e84a00;
+}
+
+.toolbar-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  background: none;
+  color: #706050;
+  border: none;
+  cursor: pointer;
+  transition: color 150ms;
+}
+
+.toolbar-button:hover:not(:disabled) {
+  color: #e84a00;
+}
+
+.toolbar-button:disabled {
+  cursor: default;
+  opacity: 0.3;
+}
+
+.preview-viewport {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  background-color: #1e1e1e;
+}
+
+#preview-canvas {
+  display: none;
+  image-rendering: pixelated;
+}
+
+.preview-message {
+  font-size: 0.875rem;
+  color: #706050;
+}
+
+.preview-error {
+  color: #e84a00;
+}
+
+.editor-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.editor-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid #333333;
+  background-color: #1e1e1e;
+}
+
+.editor-title {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #b0a090;
+}
+
+.run-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.375rem;
+  background: none;
+  color: #e84a00;
+  border: none;
+  cursor: pointer;
+  transition: color 150ms;
+}
+
+.run-button:hover {
+  color: #ff6a20;
+}
+
+#editor {
+  width: 100%;
+  flex: 1;
+}

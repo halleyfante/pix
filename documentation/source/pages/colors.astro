@@ -1,0 +1,75 @@
+---
+import Layout from "@halleyfante/documentation/Layout";
+import PixCode from "../components/PixCode.astro";
+---
+
+<Layout
+  title="Colors"
+  description="Hex color literals and named color palettes in Pix"
+  current="colors"
+>
+  <p>
+    Colors in Pix are specified as hexadecimal literals or as references to
+    named colors defined in a <code>color</code> block.
+  </p>
+
+  <h2>Hex colors</h2>
+  <p>
+    A hex color starts with <code>#</code> followed by 3, 6, or 8 hexadecimal
+    digits. The digits are case-insensitive.
+  </p>
+
+  <h3>3-digit format</h3>
+  <p>
+    Each digit is expanded by repeating it. <code>#E40</code> becomes
+    <code>#EE4400</code>. Alpha defaults to fully opaque.
+  </p>
+  <PixCode code={`#E40   // orange
+#FFF   // white
+#000   // black`} />
+
+  <h3>6-digit format</h3>
+  <p>
+    Standard RGB hex: <code>#RRGGBB</code>. Each pair represents red, green, or
+    blue in the range 0 to 255. Alpha defaults to fully opaque.
+  </p>
+  <PixCode code={`#e84a00   // accent orange
+#e8ddd0   // warm beige
+#2a1208   // dark brown
+#b0a090   // muted tan`} />
+
+  <h3>8-digit format</h3>
+  <p>
+    RGB with alpha: <code>#RRGGBBAA</code>. The last two digits set opacity.
+    <code>FF</code> is fully opaque, <code>00</code> is fully transparent.
+  </p>
+  <PixCode code={`#e84a0080   // orange at 50% opacity
+#e8ddd040   // beige at 25% opacity
+#FFFFFF00   // fully transparent white`} />
+
+  <h2>Color block</h2>
+  <p>
+    A <code>color</code> block defines named colors that can be reused
+    throughout the program. Each entry maps a name to a hex color.
+  </p>
+  <PixCode code={`color {
+    warm: #e84a00
+    light: #e8ddd0
+    dark: #2a1208
+}`} />
+
+  <h2>Referencing named colors</h2>
+  <p>
+    Use <code>color &lt;name&gt;</code> wherever a color value is expected.
+  </p>
+  <PixCode code={`draw x = 3 and y = 5 with color warm
+pixel (10, 10) with color dark
+circle (8, 8) radius 4 with color light`} />
+
+  <h2>Validation</h2>
+  <ul>
+    <li>Referencing an undefined color name produces an error.</li>
+    <li>Color names are case-sensitive.</li>
+    <li>An empty <code>color</code> block is allowed.</li>
+  </ul>
+</Layout>

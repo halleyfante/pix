@@ -1,0 +1,9 @@
+mod comments;
+mod delimiters;
+mod hexadecimal_colors;
+mod keywords;
+mod numbers;
+mod operators;
+mod position;
+mod strings;
+mod unrecognized_token;

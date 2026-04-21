@@ -1,0 +1,61 @@
+{
+  "name": "pix",
+  "displayName": "Pix",
+  "description": "Syntax highlighting and language support for Pix",
+  "version": "0.1.0",
+  "publisher": "halleyfante",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/halleyfante/pix"
+  },
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "activationEvents": [
+    "onLanguage:pix"
+  ],
+  "main": "./distribution/extension.js",
+  "scripts": {
+    "build": "cd ../../compiler && cargo build --release && cd ../tools/extension && cp ../../compiler/target/release/pix-language-server ./pix-language-server && tsc",
+    "package": "npm run build && npx @vscode/vsce package"
+  },
+  "contributes": {
+    "languages": [
+      {
+        "id": "pix",
+        "aliases": ["Pix"],
+        "extensions": [".pix"],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "pix",
+        "scopeName": "source.pix",
+        "path": "./syntaxes/pix.textmate-language.json"
+      }
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "Pix",
+      "properties": {
+        "pix.languageServerPath": {
+          "type": "string",
+          "description": "Path to the pix-language-server binary"
+        }
+      }
+    }
+  },
+  "dependencies": {
+    "vscode-languageclient": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.80.0",
+    "@vscode/vsce": "^3.0.0",
+    "typescript": "^5.0.0"
+  }
+}

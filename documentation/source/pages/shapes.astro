@@ -1,0 +1,126 @@
+---
+import Layout from "@halleyfante/documentation/Layout";
+import PixCode from "../components/PixCode.astro";
+---
+
+<Layout
+  title="Shapes"
+  description="Built-in shape statements in Pix: pixel, line, rectangle, triangle, circle"
+  current="shapes"
+>
+  <p>
+    Pix provides five built-in shape statements. Each is a shorthand that
+    resolves to an underlying mathematical expression.
+  </p>
+
+  <h2>pixel</h2>
+  <p>
+    Draws a single point at the given coordinates.
+  </p>
+  <PixCode code="pixel (<x>, <y>) with <color>" />
+
+  <div class="example">
+    <PixCode code={`grid 9 by 9
+pixel (4, 4) with #e84a00
+export "pixel" in png scale 16`} />
+    <figure>
+      <img src={`${import.meta.env.BASE_URL}examples/pixel.png`} alt="A single pixel" class="example-image" width="144" height="144" />
+      <figcaption>A single pixel at the center of a 9x9 grid</figcaption>
+    </figure>
+  </div>
+
+  <h2>line</h2>
+  <p>
+    Draws a line between two points. Both endpoints are included.
+  </p>
+  <PixCode code="line (<x1>, <y1>) to (<x2>, <y2>) with <color>" />
+
+  <div class="example">
+    <PixCode code={`grid 9 by 9
+line (1, 1) to (7, 7) with #e84a00
+export "line" in png scale 16`} />
+    <figure>
+      <img src={`${import.meta.env.BASE_URL}examples/line.png`} alt="A diagonal line" class="example-image" width="144" height="144" />
+      <figcaption>A diagonal line from (1, 1) to (7, 7)</figcaption>
+    </figure>
+  </div>
+
+  <p>
+    Handles horizontal, vertical, and diagonal lines. Diagonal lines use a
+    cross-product calculation to determine which pixels lie on the path.
+  </p>
+
+  <h2>rectangle</h2>
+  <p>
+    Draws the interior of an axis-aligned rectangle. The two points define
+    opposite corners and can be given in any order. Boundary pixels are
+    excluded.
+  </p>
+  <PixCode code="rectangle (<x1>, <y1>) to (<x2>, <y2>) with <color>" />
+
+  <div class="example">
+    <PixCode code={`grid 9 by 9
+rectangle (1, 1) to (7, 7) with #e84a00
+export "rectangle" in png scale 16`} />
+    <figure>
+      <img src={`${import.meta.env.BASE_URL}examples/rectangle.png`} alt="A filled rectangle" class="example-image" width="144" height="144" />
+      <figcaption>Interior of a rectangle — boundaries excluded</figcaption>
+    </figure>
+  </div>
+
+  <h2>triangle</h2>
+  <p>
+    Draws the interior of a triangle defined by three vertices. Uses half-plane
+    tests to determine which pixels lie inside.
+  </p>
+  <PixCode code="triangle (<x1>, <y1>) to (<x2>, <y2>) to (<x3>, <y3>) with <color>" />
+
+  <div class="example">
+    <PixCode code={`grid 17 by 17
+triangle (8, 1) to (1, 15) to (15, 15) with #e84a00
+export "triangle" in png scale 8`} />
+    <figure>
+      <img src={`${import.meta.env.BASE_URL}examples/triangle.png`} alt="A filled triangle" class="example-image" width="136" height="136" />
+      <figcaption>A centered triangle pointing upward</figcaption>
+    </figure>
+  </div>
+
+  <h2>circle</h2>
+  <p>
+    Draws a filled disc defined by a center point and a radius. A pixel is
+    filled if its squared distance from the center is strictly less than the
+    squared radius.
+  </p>
+  <PixCode code="circle (<cx>, <cy>) radius <r> with <color>" />
+
+  <div class="example">
+    <PixCode code={`grid 17 by 17
+circle (8, 8) radius 7 with #e84a00
+export "circle" in png scale 8`} />
+    <figure>
+      <img src={`${import.meta.env.BASE_URL}examples/circle.png`} alt="A filled circle" class="example-image" width="136" height="136" />
+      <figcaption>A circle centered at (8, 8) with radius 7</figcaption>
+    </figure>
+  </div>
+
+  <h2>Shapes and draw order</h2>
+  <p>
+    Shape statements follow the same execution order rules as
+    <code>draw</code>. A shape drawn later overwrites pixels from earlier
+    statements.
+  </p>
+
+  <div class="example">
+    <PixCode code={`grid 33 by 33
+circle (16, 16) radius 15 with #e84a00
+circle (16, 16) radius 12 with #e8ddd0
+circle (16, 16) radius 9 with #e84a00
+circle (16, 16) radius 6 with #e8ddd0
+circle (16, 16) radius 3 with #e84a00
+export "target" in png scale 4`} />
+    <figure>
+      <img src={`${import.meta.env.BASE_URL}examples/target.png`} alt="Concentric circles forming a target" class="example-image" width="132" height="132" />
+      <figcaption>Concentric circles — later shapes overwrite earlier ones</figcaption>
+    </figure>
+  </div>
+</Layout>

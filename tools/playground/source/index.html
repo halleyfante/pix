@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pix</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="workspace">
+      <section class="preview-panel">
+        <div class="preview-toolbar">
+          <div class="preview-info">
+            <span id="grid-size" class="preview-info-text"></span>
+            <span id="pixel-info" class="preview-info-text"></span>
+          </div>
+          <div class="preview-controls">
+            <button id="grid-toggle" class="toolbar-button grid-toggle-button active" aria-label="Toggle grid">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M0 5.5h16M0 10.5h16M5.5 0v16M10.5 0v16"/></svg>
+            </button>
+            <button id="export-button" class="toolbar-button" aria-label="Export" disabled>
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v8M4 7l4 4 4-4M2 12v2h12v-2"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="preview-viewport" id="preview-viewport">
+          <canvas id="preview-canvas"></canvas>
+          <p id="preview-message" class="preview-message">Press Run to render</p>
+        </div>
+      </section>
+      <section class="editor-panel">
+        <div class="editor-header">
+          <span class="editor-title">Editor</span>
+          <button id="run-button" class="run-button" aria-label="Run">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4 2l10 6-10 6V2z"/></svg>
+          </button>
+        </div>
+        <div id="editor"></div>
+      </section>
+    </main>
+    <script type="module" src="./application.ts"></script>
+  </body>
+</html>

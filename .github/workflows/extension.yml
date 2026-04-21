@@ -1,0 +1,61 @@
+name: Extension
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "tools/extension/**"
+      - "compiler/source/**"
+      - "compiler/Cargo.toml"
+      - "compiler/Cargo.lock"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@1.94.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        working-directory: tools/extension
+        run: npm ci
+
+      - name: Build
+        working-directory: tools/extension
+        run: npm run build
+
+      - name: Package
+        working-directory: tools/extension
+        run: npx @vscode/vsce package --no-dependencies
+
+      - name: Extract version
+        working-directory: tools/extension
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Check if release already exists
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "extension-v$VERSION" &>/dev/null; then
+            echo "Release extension-v$VERSION already exists. Skipping."
+            echo "SKIP=true" >> $GITHUB_ENV
+          fi
+
+      - name: Create release
+        if: env.SKIP != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "extension-v$VERSION" \
+            tools/extension/pix-$VERSION.vsix \
+            --title "Pix Extension v$VERSION" \
+            --notes "Install with: \`code --install-extension pix-$VERSION.vsix\`"

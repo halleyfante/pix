@@ -1,0 +1,64 @@
+---
+import Layout from "@halleyfante/documentation/Layout";
+import PixCode from "../components/PixCode.astro";
+---
+
+<Layout
+  title="Overview"
+  description="Documentation for the Pix pixel art language"
+  current=""
+>
+  <p>
+    Pix is a language for drawing pixel art. You define a grid, write
+    expressions over <code>x</code> and <code>y</code> coordinates or use
+    built-in shape shortcuts, and export the result as a PNG image.
+  </p>
+
+  <div class="example">
+    <PixCode code={`grid 17 by 17
+
+color {
+    warm: #e84a00
+}
+
+circle (5, 5) radius 4 with color warm
+circle (11, 5) radius 4 with color warm
+triangle (1, 7) to (15, 7) to (8, 15) with color warm
+
+export "heart" in png scale 8`} />
+    <figure>
+      <img src={`${import.meta.env.BASE_URL}examples/heart.png`} alt="Heart" class="example-image" width="136" height="136" />
+      <figcaption>A heart built from two circles and a triangle</figcaption>
+    </figure>
+  </div>
+
+  <h2>How it works</h2>
+  <p>
+    The pipeline reads a <code>.pix</code> source file, tokenizes it, parses it
+    into an abstract syntax tree, evaluates expressions for every pixel position
+    on the grid, renders matching pixels, and exports the result as a scaled PNG.
+  </p>
+  <ol>
+    <li>A <code>grid</code> statement sets the canvas size.</li>
+    <li>An optional <code>color</code> block defines named colors.</li>
+    <li><code>draw</code>, <code>erase</code>, <code>clear</code>, and shape statements compose the image.</li>
+    <li>One or more <code>export</code> statements save the result.</li>
+  </ol>
+
+  <h2>Language at a glance</h2>
+  <table>
+    <thead>
+      <tr><th>Feature</th><th>Syntax</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Canvas</td><td><code>grid &lt;w&gt; by &lt;h&gt;</code></td></tr>
+      <tr><td>Draw by expression</td><td><code>draw &lt;condition&gt; with &lt;color&gt;</code></td></tr>
+      <tr><td>Erase</td><td><code>erase &lt;condition&gt;</code></td></tr>
+      <tr><td>Clear</td><td><code>clear</code></td></tr>
+      <tr><td>Shapes</td><td><code>pixel</code>, <code>line</code>, <code>rectangle</code>, <code>triangle</code>, <code>circle</code></td></tr>
+      <tr><td>Named colors</td><td><code>color &#123; name: #hex &#125;</code></td></tr>
+      <tr><td>Export</td><td><code>export "name" in png scale &lt;n&gt;</code></td></tr>
+      <tr><td>Comments</td><td><code>// comment</code></td></tr>
+    </tbody>
+  </table>
+</Layout>

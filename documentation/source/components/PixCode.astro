@@ -1,0 +1,12 @@
+---
+import { Code } from "astro:components";
+import grammar from "../grammars/pix.textmate-language.json";
+
+interface Props {
+  code: string;
+}
+
+const { code } = Astro.props;
+---
+
+<Code code={code} lang={grammar} theme="css-variables" />

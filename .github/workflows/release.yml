@@ -1,0 +1,99 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      skip: ${{ steps.check.outputs.skip }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: version
+        run: |
+          VERSION=$(grep '^version' compiler/Cargo.toml | head -1 | cut -d'"' -f2)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "v${{ steps.version.outputs.version }}" &>/dev/null; then
+            echo "skip=true" >> $GITHUB_OUTPUT
+          else
+            echo "skip=false" >> $GITHUB_OUTPUT
+          fi
+
+  build:
+    needs: check
+    if: needs.check.outputs.skip != 'true'
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: linux-x86_64
+            binary: pix
+            archive: tar.gz
+          - os: macos-13
+            target: macos-x86_64
+            binary: pix
+            archive: tar.gz
+          - os: macos-latest
+            target: macos-aarch64
+            binary: pix
+            archive: tar.gz
+          - os: windows-latest
+            target: windows-x86_64
+            binary: pix.exe
+            archive: zip
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@1.94.0
+
+      - name: Build
+        working-directory: compiler
+        run: cargo build --release
+
+      - name: Package
+        shell: bash
+        run: |
+          mkdir -p release
+          cp compiler/target/release/${{ matrix.binary }} release/${{ matrix.binary }}
+          cd release
+          if [ "${{ matrix.archive }}" = "zip" ]; then
+            7z a pix-v${{ needs.check.outputs.version }}-${{ matrix.target }}.zip ${{ matrix.binary }}
+          else
+            tar czf pix-v${{ needs.check.outputs.version }}-${{ matrix.target }}.tar.gz ${{ matrix.binary }}
+          fi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pix-${{ matrix.target }}
+          path: release/pix-v${{ needs.check.outputs.version }}-${{ matrix.target }}.*
+
+  release:
+    needs: [check, build]
+    if: needs.check.outputs.skip != 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: release
+          merge-multiple: true
+
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "v${{ needs.check.outputs.version }}" \
+            release/* \
+            --title "v${{ needs.check.outputs.version }}" \
+            --generate-notes
