@@ -1,0 +1,63 @@
+name: Version Check
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extract version from Cargo.toml
+        run: |
+          VERSION=$(grep '^version' compiler/Cargo.toml | head -1 | cut -d'"' -f2)
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "Version in Cargo.toml: $VERSION"
+
+      - name: Validate semver format
+        run: |
+          if ! echo "$VERSION" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "::error::Version '$VERSION' is not valid semver (expected X.Y.Z)"
+            exit 1
+          fi
+
+      - name: Check version is not downgraded
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          LATEST=$(gh release list --limit 1 --json tagName --jq '.[0].tagName // empty' 2>/dev/null || true)
+
+          if [ -z "$LATEST" ]; then
+            echo "No existing releases. Version $VERSION is valid."
+            exit 0
+          fi
+
+          LATEST="${LATEST#v}"
+          echo "Latest release: $LATEST"
+          echo "PR version: $VERSION"
+
+          if [ "$VERSION" = "$LATEST" ]; then
+            echo "Version unchanged. No release will be created."
+            exit 0
+          fi
+
+          IFS='.' read -r CUR_MAJOR CUR_MINOR CUR_PATCH <<< "$VERSION"
+          IFS='.' read -r REL_MAJOR REL_MINOR REL_PATCH <<< "$LATEST"
+
+          DOWNGRADE=false
+          if [ "$CUR_MAJOR" -lt "$REL_MAJOR" ]; then
+            DOWNGRADE=true
+          elif [ "$CUR_MAJOR" -eq "$REL_MAJOR" ] && [ "$CUR_MINOR" -lt "$REL_MINOR" ]; then
+            DOWNGRADE=true
+          elif [ "$CUR_MAJOR" -eq "$REL_MAJOR" ] && [ "$CUR_MINOR" -eq "$REL_MINOR" ] && [ "$CUR_PATCH" -lt "$REL_PATCH" ]; then
+            DOWNGRADE=true
+          fi
+
+          if [ "$DOWNGRADE" = true ]; then
+            echo "::error::Version '$VERSION' is lower than latest release '$LATEST'"
+            exit 1
+          fi
+
+          echo "Version $VERSION is higher than $LATEST."

@@ -1,0 +1,51 @@
+---
+import Layout from "@halleyfante/documentation/Layout";
+import PixCode from "../components/PixCode.astro";
+---
+
+<Layout
+  title="Grid"
+  description="Setting up the canvas dimensions in Pix"
+  current="grid"
+>
+  <p>
+    The <code>grid</code> statement defines the size of the canvas. It is
+    required and must appear exactly once in every program.
+  </p>
+
+  <h2>Syntax</h2>
+  <PixCode code="grid <width> by <height>" />
+  <p>
+    Both <code>width</code> and <code>height</code> are positive integers. They
+    define how many pixels the canvas has along each axis.
+  </p>
+
+  <h2>Examples</h2>
+  <PixCode code={`grid 17 by 17     // 17x17 square canvas
+grid 32 by 64     // 32 wide, 64 tall
+grid 128 by 128   // large canvas`} />
+
+  <h2>Coordinate system</h2>
+  <p>
+    The origin <code>(0, 0)</code> is at the top-left corner. The
+    <code>x</code> axis increases to the right, and the <code>y</code> axis
+    increases downward.
+  </p>
+  <pre><code>(0,0) ---- x ---&gt;
+  |
+  y
+  |
+  v</code></pre>
+  <p>
+    Valid pixel positions range from <code>(0, 0)</code> to
+    <code>(width - 1, height - 1)</code>. Expressions are evaluated for every
+    position in this range.
+  </p>
+
+  <h2>Validation</h2>
+  <ul>
+    <li>Width and height must be greater than zero.</li>
+    <li>A program with no <code>grid</code> statement produces an error.</li>
+    <li>A program with more than one <code>grid</code> statement produces an error.</li>
+  </ul>
+</Layout>

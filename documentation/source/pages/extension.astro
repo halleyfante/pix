@@ -1,0 +1,49 @@
+---
+import Layout from "@halleyfante/documentation/Layout";
+---
+
+<Layout
+  title="Extension"
+  description="VS Code extension for Pix"
+  current="extension"
+>
+  <p>
+    The Pix extension for VS Code provides syntax highlighting and
+    autocomplete for <code>.pix</code> files. The language server is
+    bundled with the extension.
+  </p>
+
+  <h2>Installation</h2>
+  <p>
+    Download the <code>.vsix</code> file from the
+    <a href="https://github.com/halleyfante/pix/releases">releases page</a>
+    and install it:
+  </p>
+  <pre><code>code --install-extension pix-0.1.0.vsix</code></pre>
+
+  <h3>Building from source</h3>
+  <pre><code>cd tools/extension
+npm ci
+npm run package
+code --install-extension pix-0.1.0.vsix</code></pre>
+
+  <h2>Features</h2>
+  <ul>
+    <li>Syntax highlighting via TextMate grammar</li>
+    <li>Context-aware autocomplete powered by the language server</li>
+  </ul>
+
+  <h2>Configuration</h2>
+  <table>
+    <thead>
+      <tr><th>Setting</th><th>Description</th><th>Default</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>pix.languageServerPath</code></td>
+        <td>Path to the language server binary</td>
+        <td>Bundled binary</td>
+      </tr>
+    </tbody>
+  </table>
+</Layout>

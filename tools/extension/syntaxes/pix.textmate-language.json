@@ -1,0 +1,83 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "pix",
+  "scopeName": "source.pix",
+  "patterns": [
+    { "include": "#comment" },
+    { "include": "#string" },
+    { "include": "#color-block" },
+    { "include": "#hex-color" },
+    { "include": "#number" },
+    { "include": "#keyword" },
+    { "include": "#shape" },
+    { "include": "#format" },
+    { "include": "#operator" },
+    { "include": "#variable" },
+    { "include": "#identifier" }
+  ],
+  "repository": {
+    "comment": {
+      "name": "comment.line.double-slash.pix",
+      "match": "//.*$"
+    },
+    "string": {
+      "name": "string.quoted.double.pix",
+      "begin": "\"",
+      "end": "\""
+    },
+    "hex-color": {
+      "name": "constant.other.color.hex.pix",
+      "match": "#[0-9a-fA-F]{3,8}\\b"
+    },
+    "number": {
+      "name": "constant.numeric.pix",
+      "match": "\\b[0-9]+\\b"
+    },
+    "keyword": {
+      "name": "keyword.control.pix",
+      "match": "\\b(grid|by|draw|erase|clear|export|in|with|to|radius|scale|color|not|and|or|frame|copy|move|at|layer|mirror)\\b"
+    },
+    "shape": {
+      "name": "keyword.control.pix",
+      "match": "\\b(pixel|line|rectangle|triangle|circle)\\b"
+    },
+    "format": {
+      "name": "support.constant.pix",
+      "match": "\\b(png|svg|webp|gif)\\b"
+    },
+    "operator": {
+      "name": "keyword.operator.pix",
+      "match": "[=<>+\\-*/^]"
+    },
+    "variable": {
+      "name": "variable.language.pix",
+      "match": "\\b[xy]\\b"
+    },
+    "identifier": {
+      "name": "variable.other.pix",
+      "match": "\\b[a-zA-Z][a-zA-Z]*\\b"
+    },
+    "color-block": {
+      "begin": "\\b(color)\\s*(\\{)",
+      "beginCaptures": {
+        "1": { "name": "keyword.control.pix" },
+        "2": { "name": "punctuation.definition.block.pix" }
+      },
+      "end": "\\}",
+      "endCaptures": {
+        "0": { "name": "punctuation.definition.block.pix" }
+      },
+      "patterns": [
+        { "include": "#comment" },
+        { "include": "#hex-color" },
+        {
+          "match": "\\b([a-zA-Z]+)\\s*(:)",
+          "captures": {
+            "1": { "name": "variable.other.pix" },
+            "2": { "name": "punctuation.separator.pix" }
+          }
+        }
+      ]
+    }
+  }
+}

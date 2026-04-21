@@ -1,0 +1,100 @@
+---
+import Layout from "@halleyfante/documentation/Layout";
+import PixCode from "../components/PixCode.astro";
+---
+
+<Layout
+  title="Expressions"
+  description="Arithmetic, comparison, and logical expressions in Pix"
+  current="expressions"
+>
+  <p>
+    Expressions in Pix define conditions over the coordinate variables
+    <code>x</code> and <code>y</code>. They are evaluated for every pixel
+    position on the grid to determine which pixels should be drawn.
+  </p>
+
+  <h2>Coordinate variables</h2>
+  <p>
+    <code>x</code> is the horizontal position (increases rightward from 0) and
+    <code>y</code> is the vertical position (increases downward from 0). These
+    are the only variables available in expressions.
+  </p>
+
+  <h2>Operator precedence</h2>
+  <p>From lowest to highest:</p>
+  <table>
+    <thead>
+      <tr><th>Precedence</th><th>Operator</th><th>Associativity</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1 (lowest)</td><td><code>or</code></td><td>Left</td></tr>
+      <tr><td>2</td><td><code>and</code></td><td>Left</td></tr>
+      <tr><td>3</td><td><code>not</code></td><td>Unary prefix</td></tr>
+      <tr><td>4</td><td><code>=</code> <code>&lt;</code> <code>&gt;</code> <code>&lt;=</code> <code>&gt;=</code></td><td>Binary</td></tr>
+      <tr><td>5</td><td><code>+</code> <code>-</code></td><td>Left</td></tr>
+      <tr><td>6</td><td><code>*</code> <code>/</code></td><td>Left</td></tr>
+      <tr><td>7 (highest)</td><td><code>^</code></td><td>Right</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Arithmetic operators</h2>
+  <p>
+    These operate on numbers and produce numbers. All arithmetic uses signed
+    64-bit integers.
+  </p>
+  <PixCode code={`x + 5       // addition
+x - 8       // subtraction (can produce negative values)
+2 * x       // multiplication
+x / 2       // integer division (truncates toward zero)
+x ^ 2       // exponentiation (right-associative)`} />
+  <p>
+    Division by zero and negative exponents produce errors.
+  </p>
+
+  <h2>Comparison operators</h2>
+  <p>
+    Comparisons take two numbers and return a boolean.
+  </p>
+  <PixCode code={`x = 3       // equal
+x < 5       // less than
+x > 0       // greater than
+x <= 5      // less than or equal
+x >= 0      // greater than or equal`} />
+
+  <h2>Logical operators</h2>
+  <p>
+    Logical operators combine boolean values.
+  </p>
+  <PixCode code={`x = 3 and y = 5           // both must be true
+x = 0 or y = 0            // either can be true
+not (x = 0)                // negation`} />
+
+  <h2>Parentheses</h2>
+  <p>
+    Use parentheses to group sub-expressions and override precedence.
+  </p>
+  <PixCode code={`(x - 8) ^ 2 + (y - 8) ^ 2 < 16   // circle equation
+(x > 5 and y < 10) or (x = 0)     // grouped logic`} />
+
+  <h2>Type rules</h2>
+  <p>
+    Operators require specific types. There is no implicit type coercion.
+  </p>
+  <table>
+    <thead>
+      <tr><th>Operator</th><th>Operand types</th><th>Result type</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>+</code> <code>-</code> <code>*</code> <code>/</code> <code>^</code></td><td>Number, Number</td><td>Number</td></tr>
+      <tr><td><code>=</code> <code>&lt;</code> <code>&gt;</code> <code>&lt;=</code> <code>&gt;=</code></td><td>Number, Number</td><td>Boolean</td></tr>
+      <tr><td><code>and</code> <code>or</code></td><td>Boolean, Boolean</td><td>Boolean</td></tr>
+      <tr><td><code>not</code></td><td>Boolean</td><td>Boolean</td></tr>
+    </tbody>
+  </table>
+  <p>
+    The condition in a <code>draw</code> or <code>erase</code> statement must
+    evaluate to a boolean. Using a number expression as a condition produces an
+    error.
+  </p>
+</Layout>

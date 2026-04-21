@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: compiler
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@1.94.0
+        with:
+          components: clippy
+
+      - run: cargo build
+      - run: cargo test
+      - run: cargo clippy -- -D warnings
+
+  playground:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tools/playground
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 25
+
+      - run: npm ci
+      - run: npm test
+
+  documentation:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+    defaults:
+      run:
+        working-directory: documentation
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 25
+          registry-url: https://npm.pkg.github.com
+          scope: "@halleyfante"
+
+      - run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: npx astro build

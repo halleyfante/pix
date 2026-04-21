@@ -1,0 +1,98 @@
+---
+import Layout from "@halleyfante/documentation/Layout";
+import PixCode from "../components/PixCode.astro";
+---
+
+<Layout
+  title="Examples"
+  description="Complete Pix program examples"
+  current="examples"
+>
+  <p>
+    Complete programs that demonstrate different features of the language.
+  </p>
+
+  <h2>Heart</h2>
+  <p>
+    Two circles and a triangle combine to form a heart shape.
+  </p>
+  <div class="example">
+    <PixCode code={`grid 17 by 17
+
+color {
+    warm: #e84a00
+}
+
+circle (5, 5) radius 4 with color warm
+circle (11, 5) radius 4 with color warm
+triangle (1, 7) to (15, 7) to (8, 15) with color warm
+
+export "heart" in png scale 8`} />
+    <figure>
+      <img src={`${import.meta.env.BASE_URL}examples/heart.png`} alt="Heart" class="example-image" width="136" height="136" />
+      <figcaption>Two overlapping circles form the top, a triangle fills the bottom</figcaption>
+    </figure>
+  </div>
+
+  <h2>Smiley face</h2>
+  <p>
+    A circle for the head, pixels for the eyes, and a line for the mouth.
+  </p>
+  <div class="example">
+    <PixCode code={`grid 17 by 17
+
+color {
+    face: #e84a00
+    feature: #2a1208
+}
+
+circle (8, 8) radius 7 with color face
+pixel (5, 6) with color feature
+pixel (11, 6) with color feature
+line (5, 11) to (11, 11) with color feature
+
+export "smiley" in png scale 8`} />
+    <figure>
+      <img src={`${import.meta.env.BASE_URL}examples/smiley.png`} alt="Smiley face" class="example-image" width="136" height="136" />
+      <figcaption>Pixel, line, and circle shapes combined into a face</figcaption>
+    </figure>
+  </div>
+
+  <h2>Checkerboard</h2>
+  <p>
+    Uses integer division to test whether <code>x + y</code> is even or odd,
+    creating an alternating pattern.
+  </p>
+  <div class="example">
+    <PixCode code={`grid 9 by 9
+
+draw (x + y) / 2 * 2 = x + y with #2a2a2a
+draw not ((x + y) / 2 * 2 = x + y) with #e8ddd0
+
+export "checkerboard" in png scale 16`} />
+    <figure>
+      <img src={`${import.meta.env.BASE_URL}examples/checkerboard.png`} alt="Checkerboard" class="example-image" width="144" height="144" />
+      <figcaption>Alternating pattern using arithmetic expressions</figcaption>
+    </figure>
+  </div>
+
+  <h2>Target</h2>
+  <p>
+    Concentric circles with alternating colors, drawn from largest to smallest.
+  </p>
+  <div class="example">
+    <PixCode code={`grid 33 by 33
+
+circle (16, 16) radius 15 with #e84a00
+circle (16, 16) radius 12 with #e8ddd0
+circle (16, 16) radius 9 with #e84a00
+circle (16, 16) radius 6 with #e8ddd0
+circle (16, 16) radius 3 with #e84a00
+
+export "target" in png scale 4`} />
+    <figure>
+      <img src={`${import.meta.env.BASE_URL}examples/target.png`} alt="Target" class="example-image" width="132" height="132" />
+      <figcaption>Five concentric circles — later shapes overwrite earlier ones</figcaption>
+    </figure>
+  </div>
+</Layout>

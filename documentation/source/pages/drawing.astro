@@ -1,0 +1,158 @@
+---
+import Layout from "@halleyfante/documentation/Layout";
+import PixCode from "../components/PixCode.astro";
+---
+
+<Layout
+  title="Drawing"
+  description="Draw, erase, and clear statements in Pix"
+  current="drawing"
+>
+  <p>
+    Drawing statements control which pixels on the grid receive color. They are
+    processed in the order they appear in the source, so later statements
+    overwrite earlier ones.
+  </p>
+
+  <h2>draw</h2>
+  <p>
+    The <code>draw</code> statement colors every pixel where the condition
+    evaluates to true.
+  </p>
+  <PixCode code="draw <condition> with <color>" />
+  <p>Examples:</p>
+  <PixCode code={`// draw a single pixel
+draw x = 3 and y = 5 with #e84a00
+
+// draw a horizontal line
+draw y = 0 with #b0a090
+
+// draw a filled circle using a math expression
+draw (x - 8) ^ 2 + (y - 8) ^ 2 < 16 with #5a3018
+
+// draw using a named color
+draw x > 0 and x < 15 with color warm`} />
+  <p>
+    The condition must be a boolean expression. Using a numeric expression as a
+    condition produces an error.
+  </p>
+
+  <h2>erase</h2>
+  <p>
+    The <code>erase</code> statement removes color from every pixel where the
+    condition is true, setting those pixels back to transparent.
+  </p>
+  <PixCode code="erase <condition>" />
+  <p>Examples:</p>
+  <PixCode code={`// erase the top row
+erase y = 0
+
+// erase a rectangular region
+erase x > 0 and x < 4 and y > 0 and y < 4`} />
+
+  <h2>clear</h2>
+  <p>
+    The <code>clear</code> statement removes all pixels from the entire grid,
+    resetting everything to transparent.
+  </p>
+  <PixCode code="clear" />
+  <p>
+    This is useful when you want to start fresh partway through a program.
+  </p>
+
+  <h2>Execution order</h2>
+  <p>
+    Statements execute top to bottom. This means:
+  </p>
+  <ul>
+    <li>A <code>draw</code> overwrites any previous color at the same position.</li>
+    <li>An <code>erase</code> after a <code>draw</code> removes those pixels.</li>
+    <li>A <code>clear</code> resets the entire grid, regardless of what was drawn before.</li>
+  </ul>
+  <PixCode code={`grid 9 by 9
+
+// fill the entire grid
+draw x = x with #e8ddd0
+
+// erase the border
+erase x = 0 or x = 8 or y = 0 or y = 8
+
+// draw only the corners
+draw (x = 0 or x = 8) and (y = 0 or y = 8) with #e84a00
+
+export "order" in png scale 16`} />
+
+  <h2>copy</h2>
+  <p>
+    Copy a rectangular region of the grid to another position. The original
+    pixels remain in place.
+  </p>
+  <PixCode code="copy (<x1>, <y1>) to (<x2>, <y2>) at (<dx>, <dy>)" />
+  <PixCode code={`circle (4, 4) radius 3 with #e84a00
+copy (1, 1) to (7, 7) at (8, 1)`} />
+
+  <h2>move</h2>
+  <p>
+    Move a rectangular region of the grid to another position. The source region
+    is erased after the pixels are placed at the destination.
+  </p>
+  <PixCode code="move (<x1>, <y1>) to (<x2>, <y2>) at (<dx>, <dy>)" />
+  <PixCode code={`circle (4, 4) radius 3 with #e84a00
+move (1, 1) to (7, 7) at (8, 1)`} />
+
+  <h2>layer</h2>
+  <p>
+    A named block that groups drawing statements onto an isolated grid.
+    <code>clear</code> and <code>erase</code> inside a layer only affect that
+    layer. Layers are composited in the order they appear &mdash; later layers
+    are drawn on top.
+  </p>
+  <PixCode code={`layer background {
+    rectangle (0, 0) to (15, 15) with #87CEEB
+}
+
+layer character {
+    circle (8, 8) radius 3 with #e84a00
+}`} />
+  <p>
+    An <code>export</code> inside a layer block exports only that layer. An
+    <code>export</code> outside any layer exports all layers composited. In SVG
+    output, each layer becomes a <code>&lt;g&gt;</code> element with the layer
+    name as its <code>id</code>.
+  </p>
+
+  <h2>mirror</h2>
+  <p>
+    A block that draws its contents and also their reflection across a
+    two-point axis.
+  </p>
+  <PixCode code={`mirror (0, 8) to (15, 8) {
+    circle (4, 4) radius 3 with #e84a00
+}`} />
+  <p>
+    The two points define the axis line. Any two points on the grid are valid,
+    enabling horizontal, vertical, diagonal, or arbitrary-angle mirroring.
+  </p>
+
+  <h2>frame</h2>
+  <p>
+    Capture the current grid state as an animation keyframe. Each frame requires
+    a delay in milliseconds. Use with <code>export in gif</code> to produce
+    an animated image.
+  </p>
+  <PixCode code={`circle (4, 4) radius 1 with #e84a00
+frame 200
+
+circle (4, 4) radius 2 with #e84a00
+frame 100
+
+circle (4, 4) radius 3 with #e84a00
+frame 500
+
+export "grow" in gif`} />
+  <p>
+    The grid accumulates between frames. Use <code>clear</code> to reset
+    explicitly. If <code>frame</code> statements are present but no animated
+    export is used, the compiler emits a warning.
+  </p>
+</Layout>

@@ -1,0 +1,7 @@
+services:
+  playground:
+    build:
+      context: ../..
+      dockerfile: tools/playground/Dockerfile
+    ports:
+      - "3000:3000"
